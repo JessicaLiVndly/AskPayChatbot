@@ -194,3 +194,5 @@ prof/
 coverage
 .eslintcache
 tsconfig.tsbuildinfo
+
+chroma
