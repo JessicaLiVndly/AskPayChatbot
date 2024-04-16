@@ -39,18 +39,17 @@ def main():
     user_question = st.text_input("Enter your question")
 
     with st.sidebar:
-        st.title("Update or Create Vector Store:")
+        st.title("Update Vector Store:")
 
         if st.button("Data Ingestion"):
-            with st.spinner("Processing..."):
+            with st.spinner("Data Processing..."):
                 generate_data_store()
-                st.success("Done")
+                st.success("Data ingestion done")
 
-        if st.button("Output"):
-            with st.spinner("Processing..."):
-                # chroma_index = Chroma.load_local("chroma_index", openai_embedding)
-                st.write(get_response(user_question))
-                st.success("Done")
+    if st.button("Query"):
+        with st.spinner("Querying..."):
+            st.write(get_response(user_question))
+            st.success("Query done")
 
 
 if __name__ == "__main__":
