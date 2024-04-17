@@ -22,9 +22,7 @@ def get_chroma_collection():
     return chroma_client.get_collection(COLLECTION_NAME)
 
 
-def main():
-    query_text = input("Enter your question: ")
-
+def query_data(query_text):
     # grab the collection
     collection = get_chroma_collection()
 
@@ -32,11 +30,20 @@ def main():
     results = collection.query(query_texts=query_text, n_results=3)
     if len(results) == 0:
         print(f"Unable to find matching results.")
-        return
+        return [], {}
 
     docs = results['documents'][0]
     metadatas = results['metadatas'][0]
     sources = {item['url'] for item in metadatas}
+    return docs, sources
+
+
+def main():
+    query_text = input("Enter your question: ")
+    docs, sources = query_data(query_text)
+
+    print(docs)
+    print(sources)
 
     # query the AI model
     # context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])

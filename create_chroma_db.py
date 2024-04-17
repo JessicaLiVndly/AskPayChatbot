@@ -23,7 +23,7 @@ def main():
 def generate_data_store():
     documents = load_slack_history()
     chunks = split_text(documents)
-    save_to_chroma(chunks)
+    save_to_chroma(documents)
 
 
 # Define the metadata extraction function.
