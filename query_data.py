@@ -1,3 +1,5 @@
+import json
+
 import chromadb
 import argparse
 
@@ -32,7 +34,10 @@ def main():
         print(f"Unable to find matching results.")
         return
 
-    print(results)
+    docs = results['documents'][0]
+    metadatas = results['metadatas'][0]
+    sources = {item['url'] for item in metadatas}
+
     # query the AI model
     # context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
     # prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)

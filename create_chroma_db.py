@@ -2,18 +2,22 @@ from langchain.document_loaders import JSONLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 from langchain.vectorstores.chroma import Chroma
-from chromadb.utils import embedding_functions
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import os
 import shutil
+import time
 
 CHROMA_PATH = "chroma"
-SLACK_DATA_FILE_PATH = "./slack_data/sample.json"
+SLACK_DATA_FILE_PATH = "./slack_data/slack_sanitized.json"
+# SLACK_DATA_FILE_PATH = "./slack_data/sample_data.json"
 COLLECTION_NAME = "ask_pay_data"
 
 
 def main():
+    start = time.time()
     generate_data_store()
+    stop = time.time()
+    print("Elapsed time:", stop-start, "seconds")
 
 
 def generate_data_store():
@@ -24,16 +28,15 @@ def generate_data_store():
 
 # Define the metadata extraction function.
 def metadata_func(record: dict, metadata: dict) -> dict:
-    # TODO: populate the metadata with slack URLs here
-    print(f'Record: {record}')
+    metadata['url'] = record['url']
     return metadata
 
 
 def load_slack_history():
     loader = JSONLoader(
         file_path=SLACK_DATA_FILE_PATH,
-        jq_schema='.data[]',
-        # content_key="content",
+        jq_schema='.[]',
+        content_key="messages",
         metadata_func=metadata_func,
         text_content=False,
     )
@@ -43,17 +46,18 @@ def load_slack_history():
 
 def split_text(documents: list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=300,
-        chunk_overlap=100,
+        chunk_size=1000,
+        chunk_overlap=200,
         length_function=len,
         add_start_index=True,
     )
     chunks = text_splitter.split_documents(documents)
     print(f"Split {len(documents)} documents into {len(chunks)} chunks.")
 
-    document = chunks[0]
-    print(document.page_content)
-    print(document.metadata)
+    # for document in chunks[:3]:
+    #     print('-------------------------')
+    #     print(document.page_content)
+    #     print(document.metadata)
 
     return chunks
 
