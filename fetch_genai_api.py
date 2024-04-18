@@ -30,7 +30,7 @@ def get_predictions(prompt_id, question, contexts, variables, extra_prompts):
     # Define the request body from question, contexts, variables and extra prompts
     body = {
         "inputArgs": variables,
-        "promptItems": [{"type": "user", "content": question}] + [{"type": "user", "content": p} for p in extra_prompts] + [{"type": "context", "content": p} for p in contexts]
+        "promptItems": [{"type": "user", "content": question}] + [{"type": "user", "content": p} for p in extra_prompts] + [{"type": "context", "content": contexts}]
     }
 
     response = fetch_prediction_from_genai(prompt_id, body)
